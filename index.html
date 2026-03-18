@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>禮貌大挑戰 - 成為社交小英雄</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0f9ff;
+            overflow-x: hidden;
+        }
+        .card-bounce {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+        .btn-hover {
+            transition: all 0.2s;
+        }
+        .btn-hover:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- 遊戲容器 -->
+    <div id="game-container" class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-6 md:p-10 relative overflow-hidden">
+        
+        <!-- 裝飾背景 -->
+        <div class="absolute -top-10 -right-10 w-40 h-40 bg-yellow-200 rounded-full opacity-50"></div>
+        <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-green-200 rounded-full opacity-50"></div>
+
+        <!-- 初始畫面 -->
+        <div id="start-screen" class="text-center relative z-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-blue-600 mb-6">✨ 禮貌大挑戰 ✨</h1>
+            <div class="text-6xl mb-6 card-bounce">🧚‍♂️</div>
+            <p class="text-xl text-gray-600 mb-8">你好！我是禮貌小精靈。<br>準備好通過 40 個考驗，成為社交小英雄嗎？</p>
+            <button onclick="startGame()" class="bg-blue-500 text-white text-2xl font-bold py-4 px-12 rounded-full btn-hover shadow-lg">
+                開始挑戰！
+            </button>
+        </div>
+
+        <!-- 遊戲主體 -->
+        <div id="quiz-screen" class="hidden relative z-10">
+            <!-- 進度條 -->
+            <div class="flex items-center justify-between mb-4">
+                <span id="difficulty-stars" class="text-yellow-500 font-bold"></span>
+                <span id="progress-text" class="text-gray-500 font-bold">1 / 40</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-4 mb-8">
+                <div id="progress-fill" class="bg-green-400 h-4 rounded-full progress-bar" style="width: 2.5%"></div>
+            </div>
+
+            <!-- 題目區 -->
+            <div class="text-center mb-10">
+                <div id="scenario-icon" class="text-7xl mb-6">❓</div>
+                <h2 id="scenario-text" class="text-2xl md:text-3xl font-bold text-gray-800 leading-relaxed">題目讀取中...</h2>
+            </div>
+
+            <!-- 選項區 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="checkAnswer(true)" class="bg-green-100 hover:bg-green-200 border-4 border-green-400 text-green-700 font-bold py-6 px-4 rounded-2xl text-2xl btn-hover">
+                    👍 是禮貌的
+                </button>
+                <button onclick="checkAnswer(false)" class="bg-red-100 hover:bg-red-200 border-4 border-red-400 text-red-700 font-bold py-6 px-4 rounded-2xl text-2xl btn-hover">
+                    👎 不禮貌喔
+                </button>
+            </div>
+        </div>
+
+        <!-- 解釋畫面 (Modal) -->
+        <div id="feedback-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl">
+                <div id="feedback-icon" class="text-6xl mb-4"></div>
+                <h3 id="feedback-title" class="text-3xl font-bold mb-4"></h3>
+                <p id="feedback-explanation" class="text-lg text-gray-600 mb-8 leading-relaxed"></p>
+                <button onclick="nextQuestion()" class="bg-blue-500 text-white font-bold py-3 px-10 rounded-full text-xl btn-hover">
+                    下一個挑戰
+                </button>
+            </div>
+        </div>
+
+        <!-- 結算畫面 -->
+        <div id="result-screen" class="hidden text-center relative z-10">
+            <h2 class="text-4xl font-bold text-yellow-500 mb-6">🎉 挑戰完成！ 🎉</h2>
+            <div class="text-8xl mb-6">🏆</div>
+            <p class="text-2xl text-gray-700 mb-8">太棒了！你通過了所有考驗！<br>你現在是一位非常有禮貌的小英雄了！</p>
+            <button onclick="location.reload()" class="bg-blue-500 text-white font-bold py-4 px-12 rounded-full text-2xl btn-hover shadow-lg">
+                再玩一次
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // 1星
+            { text: "想玩盪鞦韆，直接把正在玩的小朋友推開。", isPolite: false, stars: 1, explanation: "推人會讓對方受傷或難過，應該要排隊喔。" },
+            { text: "走過去問：「請問我可以排隊等你玩完，再換我嗎？」", isPolite: true, stars: 1, explanation: "詢問並等待是尊重他人的表現，大家都會喜歡你。" },
+            { text: "老師發作業本，拿到後直接丟到同學桌上，沒說半句話。", isPolite: false, stars: 1, explanation: "「丟」東西會讓人感覺不被尊重，應該用拿的。" },
+            { text: "雙手把作業本遞給同學，並說：「這是你的作業本。」", isPolite: true, stars: 1, explanation: "雙手遞物非常有禮貌，對方會感覺到你的心意。" },
+            { text: "進別人的教室時，直接衝進去，不打聲招呼。", isPolite: false, stars: 1, explanation: "直接衝進去會嚇到別人，像是不速之客。" },
+            { text: "進門前先輕輕敲門，並問：「請問我可以進去嗎？」", isPolite: true, stars: 1, explanation: "敲門是基本的禮貌，代表你很尊重這個空間。" },
+            { text: "同學正在看書，故意在他耳邊大聲拍手嚇他。", isPolite: false, stars: 1, explanation: "嚇人會讓對方心臟跳很快、不舒服，這不是開玩笑喔。" },
+            { text: "同學在看書時，輕聲走過，不發出聲音干擾他。", isPolite: true, stars: 1, explanation: "保持安靜是體貼別人的表現，讓別人能專心。" },
+            
+            // 2星
+            { text: "說了「謝謝」，但眼睛看著天花板，語氣很不耐煩。", isPolite: false, stars: 2, explanation: "雖然說了謝謝，但態度不真誠，對方感覺不到你的感謝。" },
+            { text: "說「謝謝」時，眼睛看著對方的眼睛，並帶著微笑。", isPolite: true, stars: 2, explanation: "眼神接觸代表你是真心的，對方也會覺得很開心。" },
+            { text: "爸爸在講話，小明一邊聽一邊玩玩具，完全沒抬頭。", isPolite: false, stars: 2, explanation: "不抬頭代表你沒專心聽，這對說話的人很不禮貌。" },
+            { text: "別人對自己說話時，放下玩具，看著對方表示「我有在聽」。", isPolite: true, stars: 2, explanation: "放下手邊的事聽人說話，是最高級的尊重。" },
+            { text: "同學不小心碰到你，你大喊：「你幹嘛啦！煩死人了！」", isPolite: false, stars: 2, explanation: "對方是不小心的，大聲責備會讓大家都很尷尬。" },
+            { text: "同學不小心碰到你，你冷靜地說：「沒關係，下次請小心一點。」", isPolite: true, stars: 2, explanation: "原諒別人的小錯誤，會讓你有更多好朋友。" },
+            { text: "老師問問題，不舉手直接大聲喊出答案。", isPolite: false, stars: 2, explanation: "直接大喊會打亂老師的教學，也讓別的小朋友沒機會思考。" },
+            { text: "舉起手安靜等待老師點名，才站起來回答問題。", isPolite: true, stars: 2, explanation: "遵守教室規則，能讓大家學習得更好。" },
+
+            // 3星
+            { text: "看到好朋友剪了新髮型，指著他笑：「你的頭髮好醜喔！」", isPolite: false, stars: 3, explanation: "隨便評論別人的外表很傷人，心裡想的不一定要說出來。" },
+            { text: "雖然覺得朋友髮型奇怪，但說：「你剪頭髮了耶！感覺很有精神喔。」", isPolite: true, stars: 3, explanation: "找出優點稱讚別人，能讓好朋友心情變好。" },
+            { text: "到別人家作客，嫌棄說：「你們家好小好亂喔。」", isPolite: false, stars: 3, explanation: "主人辛苦邀請你，批評別人的家是非常沒禮貌的。" },
+            { text: "到別人家時，主動問：「請問需要換拖鞋嗎？」並稱讚家裡很溫馨。", isPolite: true, stars: 3, explanation: "尊重人家的家規，並給予稱讚，大家都會歡迎你再去。" },
+            { text: "收到長輩送的禮物，當面說：「這好幼稚，我不要這個。」", isPolite: false, stars: 3, explanation: "這會讓送禮物的人很難過，浪費了對方的一番心意。" },
+            { text: "雖然不喜歡禮物，仍收下並說：「謝謝奶奶特地買給我。」", isPolite: true, stars: 3, explanation: "你是為了對方的「心意」而道謝，這是體貼的表現。" },
+            { text: "玩遊戲贏了之後，在輸掉的人面前跳舞喊：「你超爛的！」", isPolite: false, stars: 3, explanation: "嘲笑對手會顯得你很沒風度，大家以後就不想跟你玩了。" },
+            { text: "贏了之後，對夥伴說：「這場比賽很好玩，你剛才那一招很厲害。」", isPolite: true, stars: 3, explanation: "贏家也要有風度，稱讚對手會讓你贏得更多尊敬。" },
+
+            // 4星
+            { text: "看到老師在跟家長嚴肅講話，一直拉老師衣服喊：「我要上廁所。」", isPolite: false, stars: 4, explanation: "打斷大人的重要對話很不體貼，除非是非常緊急的情況。" },
+            { text: "先站在旁邊不打斷，等老師看過來才用手勢示意要上廁所。", isPolite: true, stars: 4, explanation: "懂得觀察時機（讀空氣），代表你很成熟喔。" },
+            { text: "看到同學在哭，大喊：「大家快來看，他在哭耶！」", isPolite: false, stars: 4, explanation: "在別人難過時看熱鬧，是非常不體貼的行為。" },
+            { text: "拿衛生紙遞給哭泣的同學，輕聲問：「你需要幫忙嗎？」", isPolite: true, stars: 4, explanation: "在別人脆弱時給予關心，是真正的溫柔禮貌。" },
+            { text: "同學在講秘密，偷偷躲在後面偷聽，還跑去告訴別人。", isPolite: false, stars: 4, explanation: "偷聽和亂傳話是破壞信任的行為，非常不可取。" },
+            { text: "發現別人在講私事，主動走開，給對方留下一點空間。", isPolite: true, stars: 4, explanation: "尊重隱私是禮貌的高級表現。" },
+            { text: "在安靜的圖書館，雖然是在討論功課，但用平常的音量說笑。", isPolite: false, stars: 4, explanation: "在安靜場合不控制音量，會干擾到所有人。" },
+            { text: "在安靜場合需要說話時，湊到對方耳邊用「蚊子聲音」說話。", isPolite: true, stars: 4, explanation: "懂得隨著環境調整自己，是很有修養的表現。" },
+
+            // 5星
+            { text: "辛苦畫的圖被同學不小心畫到一筆，氣得直接撕爛對方的畫。", isPolite: false, stars: 5, explanation: "報復行為會讓事情變更糟，而且對方是不小心的。" },
+            { text: "雖然很生氣，但先深呼吸，對同學說：「你畫到我的畫了，我很難過。」", isPolite: true, stars: 5, explanation: "用「說」的表達情緒，比動手或罵人更有力量。" },
+            { text: "想借的玩具被別人先拿走了，在那裡大哭大鬧說「不公平」。", isPolite: false, stars: 5, explanation: "哭鬧不能解決問題，還會讓大家不想跟你一起玩。" },
+            { text: "雖然失望，但對同學說：「那等你玩完了，可以換我玩嗎？」", isPolite: true, stars: 5, explanation: "學會等待和協商，是情緒控制的高手。" },
+            { text: "被老師誤會沒帶作業，對老師大吼：「妳弄錯了啦！我明明有帶！」", isPolite: false, stars: 5, explanation: "即使自己是對的，大聲吼叫也會顯得不尊重長輩。" },
+            { text: "被誤會時，冷靜拿出作業溫和地說：「老師，我的在這裡，請妳看一下。」", isPolite: true, stars: 5, explanation: "用事實平靜地證明自己，比大吼大叫更有效。" },
+            { text: "爸媽在忙，為了引起注意就在旁邊大叫或摔東西。", isPolite: false, stars: 5, explanation: "用破壞的方式吸引注意，會讓爸媽更生氣也更累。" },
+            { text: "輕拍忙碌中的媽媽，說：「媽媽妳忙完可以陪我玩嗎？」然後在旁邊等。", isPolite: true, stars: 5, explanation: "體諒別人的辛苦，別人也會更願意陪你玩喔。" }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('scenario-text').innerText = q.text;
+            document.getElementById('progress-text').innerText = `${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('progress-fill').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+            
+            // 顯示難度星星
+            let stars = "";
+            for(let i=0; i<q.stars; i++) stars += "⭐";
+            document.getElementById('difficulty-stars').innerText = `難度: ${stars}`;
+
+            // 隨機圖標
+            const icons = ['🎒', '🏫', '🎨', '🧩', '🍽️', '⚽', '🍦', '🧸'];
+            document.getElementById('scenario-icon').innerText = icons[Math.floor(Math.random() * icons.length)];
+        }
+
+        function checkAnswer(userChoice) {
+            const q = questions[currentQuestion];
+            const isCorrect = userChoice === q.isPolite;
+            
+            const modal = document.getElementById('feedback-modal');
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+            const explanation = document.getElementById('feedback-explanation');
+
+            modal.classList.remove('hidden');
+
+            if (isCorrect) {
+                icon.innerText = "❤️";
+                title.innerText = "答對了！";
+                title.className = "text-3xl font-bold mb-4 text-green-500";
+            } else {
+                icon.innerText = "💡";
+                title.innerText = "再想想看...";
+                title.className = "text-3xl font-bold mb-4 text-orange-500";
+            }
+
+            explanation.innerText = q.explanation;
+        }
+
+        function nextQuestion() {
+            document.getElementById('feedback-modal').classList.add('hidden');
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
