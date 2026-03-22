@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>禮貌大挑戰 - 精英版</title>
+    <title>禮貌大挑戰 - 高階版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -102,20 +102,20 @@
         <div class="game-area">
             <div id="start-screen" class="text-center">
                 <h1 class="text-6xl font-extrabold text-blue-600 mb-6">✨ 禮貌大挑戰 ✨</h1>
-                <p class="text-2xl text-gray-600 mb-8">準備好面對更難的挑戰了嗎？讓我們開始吧！</p>
+                <p class="text-2xl text-gray-600 mb-8">準備好面對挑戰了嗎？</p>
                 <button onclick="startGame()" class="bg-blue-500 text-white text-3xl font-bold py-6 px-16 rounded-full shadow-lg hover:bg-blue-600 active:scale-95 transition">
-                    開始精英挑戰模式
+                    開始挑戰
                 </button>
             </div>
 
             <div id="quiz-screen" class="hidden scenario-box">
                 <div class="absolute top-6 left-6 right-6 flex justify-between items-center">
-                    <span id="difficulty-badge" class="bg-yellow-400 text-white px-4 py-1 rounded-full font-bold text-lg">判斷難度: ⭐⭐⭐</span>
+                    <span class="text-gray-400 font-bold text-lg">情境練習</span>
                     <span id="progress-text" class="text-blue-500 font-bold text-xl">第 1 / 40 題</span>
                 </div>
 
                 <div id="scenario-icon" class="text-9xl mb-4">🤫</div>
-                <h2 id="scenario-text" class="text-3xl md:text-4xl font-bold text-gray-800 mb-8 leading-relaxed max-w-4xl text-center">
+                <h2 id="scenario-text" class="text-3xl md:text-4xl font-bold text-gray-800 mb-8 leading-relaxed max-w-4xl text-center px-4">
                     情境載入中...
                 </h2>
 
@@ -204,51 +204,49 @@
             });
         }
 
-        // 精英難度情境資料 (由判斷難度排序)
+        // 全 40 題高難度情境 (涵蓋社交直覺、心理邊界與非言語情緒)
         const questions = [
-            // ⭐⭐⭐ 社交覺知與微小態度 (中等)
-            { text: "雖然說了「謝謝」，但眼睛一直盯著地板，手還在玩別的東西。", isPolite: false, stars: 3, explanation: "態度不夠真誠，會讓幫忙你的人感覺不到謝意喔。", icon: "😒" },
-            { text: "別人對你說話時，雖然你沒回話，但眼睛看著對方並點頭表示在聽。", isPolite: true, stars: 3, explanation: "專注的傾聽是最高級的禮貌，對方會覺得被重視。", icon: "👂" },
-            { text: "看見同學剪了新髮型，你說：「你剪頭髮了耶！感覺很有精神喔。」", isPolite: true, stars: 3, explanation: "找出優點稱讚，能避開讓朋友尷尬的缺點。", icon: "✂️" },
-            { text: "同學不小心弄壞你的橡皮擦，你冷靜地說：「沒關係，我知道你不是故意的。」", isPolite: true, stars: 3, explanation: "體諒別人的「不小心」，是很有氣度的表現。", icon: "🕊️" },
-            { text: "去同學家作客，直接在人家家裡到處跑，並打開冰箱找飲料。", isPolite: false, stars: 3, explanation: "隨便碰別人家裡的東西非常失禮，應該先詢問主人。", icon: "🏠" },
-            { text: "想借的色筆就在桌上，雖然同學在忙，你仍輕拍他問：「可以借我嗎？」", isPolite: true, stars: 3, explanation: "無論關係多好，借東西一定要先得到本人的同意。", icon: "🖍️" },
-            { text: "比賽輸了，小強大叫：「這不公平！一定是裁判弄錯了！」並摔球拍。", isPolite: false, stars: 3, explanation: "輸不起的行為會讓大家覺得你很難相處，沒風度。", icon: "😠" },
-            { text: "同學想借你的玩具，你誠實說：「這是我很寶貝的東西，我現在不敢借人。」", isPolite: true, stars: 3, explanation: "禮貌地說出原因並拒絕，比勉強答應後生氣更好。", icon: "🧸" },
-
-            // ⭐⭐⭐⭐ 讀空氣與時機判斷 (困難)
-            { text: "老師正在安撫受傷的小朋友，小明跑過去一直拉老師說：「我要改作業！」", isPolite: false, stars: 4, explanation: "雖然改作業很重要，但打斷老師安慰人是非常不體貼的時機。", icon: "🩹" },
-            { text: "發現兩位老師正在嚴肅地講話，你先站在旁邊等她們眼神交會才開口。", isPolite: true, stars: 4, explanation: "懂得等待合適的切入時機（讀空氣），代表你很體貼。", icon: "🗣️" },
-            { text: "同學正在哭，你不但沒笑他，還幫忙拿衛生紙給他並安靜陪著他。", isPolite: true, stars: 4, explanation: "給予安靜的陪伴和實質幫助，是真正有修養的行為。", icon: "🤧" },
-            { text: "看見同學在講悄悄話，小明故意湊過去問：「你們在講什麼？我也要聽！」", isPolite: false, stars: 4, explanation: "偷聽或強迫別人分享秘密，是侵犯隱私的不禮貌行為。", icon: "🤫" },
-            { text: "在安靜的閱覽室，你因為看到好笑的書就大聲笑出來，還跟旁邊人分享。", isPolite: false, stars: 4, explanation: "在安靜場合控制自己的音量，是尊重所有人的基本素養。", icon: "📖" },
-            { text: "看到同學不小心跌倒姿勢很滑稽，你馬上轉過頭不去看他，避免他尷尬。", isPolite: true, stars: 4, explanation: "「不看」也是一種溫柔，守護別人的自尊心非常有禮貌。", icon: "🙈" },
-            { text: "雖然你很急著想分享剛畫好的圖，但看到老師在忙，你選擇先回座位等。", isPolite: true, stars: 4, explanation: "能夠克制自己的衝動去體諒別人的狀態，是非常高級的判斷。", icon: "🎨" },
-            { text: "有人在跟你講話，你雖然聽著，但手一直不停地在按原子筆發出喀喀聲。", isPolite: false, stars: 4, explanation: "這些瑣碎的小動作會讓說話的人覺得你心不在焉，很不禮貌。", icon: "🖊️" },
-
-            // ⭐⭐⭐⭐⭐ 情緒調節與高級應對 (精英)
-            { text: "你辛苦做的樂高被同學弄倒了，你雖然難過，但先深呼吸才請他幫你修理。", isPolite: true, stars: 5, explanation: "在憤怒時選擇先冷靜並解決問題，是最強的禮貌魔法。", icon: "🧩" },
-            { text: "被老師誤會你沒帶課本，你對著老師大吼：「妳弄錯了啦！我明明有帶！」", isPolite: false, stars: 5, explanation: "即使你是對的，大吼大叫也會顯得不尊重長輩，無法解決問題。", icon: "📢" },
-            { text: "被誤會時，冷靜拿出課本溫和地說：「老師，我的課本在這裡，請妳看一下。」", isPolite: true, stars: 5, explanation: "用事實平靜地證明自己，比情緒激動更有說服力。", icon: "📁" },
-            { text: "爸媽正在處理事情，你因為無聊就不斷在旁邊跳動大叫吸引注意力。", isPolite: false, stars: 5, explanation: "用干擾的方式要求陪伴，是只想到自己而不體貼別人的表現。", icon: "💥" },
-            { text: "比賽輸了雖然很想哭，但仍主動走到對手面前擊掌說：「你打得真好。」", isPolite: true, stars: 5, explanation: "能給予競爭對手掌聲，這才是真正的英雄風度。", icon: "🤝" },
-            { text: "好朋友一直求你借他最心愛的寶可夢卡，你怕弄壞所以說：「我現在沒辦法借你，但我們可以一起看。」", isPolite: true, stars: 5, explanation: "提供替代方案的禮貌拒絕，能同時守護友誼和心愛的東西。", icon: "🃏" },
-            { text: "雖然你對今天的課程覺得很無聊，但你依然坐端正並看著老師不打呵欠。", isPolite: true, stars: 5, explanation: "「展現尊重的行為」即使在沒興趣時也堅持，是極高修養的表現。", icon: "😴" },
-            { text: "收到長輩送的禮物是不喜歡的，你直接當面說：「這好幼稚喔，我不要。」", isPolite: false, stars: 5, explanation: "拒絕心意會傷到對方的心，禮貌是為了感謝對方的「心意」。", icon: "🎁" }
-            // ... 可依此邏輯繼續增加至 40 題，確保禮貌與不禮貌各半
+            { text: "同學在分享他養的貓過世了，小明雖然覺得難過，但為了不讓氣氛太沉重，馬上大聲講了一個笑話。", isPolite: false, explanation: "在別人表達悲傷時強行切換氣氛是不體貼的，應該給予傾聽與同情。", icon: "🐱" },
+            { text: "看見兩位朋友在爭論，小華沒有介入幫誰，而是等他們冷靜後，分別問兩人：「你現在感覺好點了嗎？」", isPolite: true, explanation: "不隨便站隊且關心朋友的情緒，是高階的社交禮貌。", icon: "🕊️" },
+            { text: "在小團體聊天時，發現有一位同學一直插不進話，你主動看向他並問：「你對這件事有什麼想法嗎？」", isPolite: true, explanation: "主動邀請邊緣的人加入對話，是具備高度觀察力的體貼行為。", icon: "🗣️" },
+            { text: "當你正在專心畫畫時，朋友一直站在你旁邊評論：「這裡畫錯了、那裡顏色不好看」，你氣得大喊：「閉嘴，走開！」", isPolite: false, explanation: "雖然對方冒犯在先，但大喊大叫仍不禮貌，應溫和表達：「請讓我安靜畫畫」。", icon: "🎨" },
+            { text: "收到好朋友送的生日禮物，雖然你已經有一個一模一樣的了，你依然微笑說：「謝謝你，這顏色很漂亮！」", isPolite: true, explanation: "禮貌是為了回報對方的「心意」，而非評價「物品」本身。", icon: "🎁" },
+            { text: "老師正在批評全班表現不好，小強覺得自己表現很好，所以在那裡玩筆、搖晃椅子，表現出不在乎的樣子。", isPolite: false, explanation: "這是一種非言語的不尊重，集體反省時應維持莊重的態度。", icon: "🪑" },
+            { text: "你去別人家作客，想上廁所時，先詢問主人：「請問我可以借用廁所嗎？是在那一扇門後嗎？」", isPolite: true, explanation: "尊重別人的私人空間，不隨意探索，是基本修養。", icon: "🚽" },
+            { text: "同學告訴你一個祕密後，你雖然沒有告訴別人，卻在聊天中故意暗示：「我知道某些人不知道的事喔。」", isPolite: false, explanation: "這種炫耀資訊的行為會讓當事人感到不安，是對信任的隱性背叛。", icon: "🤐" },
+            { text: "當朋友在哭時，你沒有一直問「你為什麼哭」，而是默默遞上一張衛生紙並坐在他旁邊陪他。", isPolite: true, explanation: "給予適度的空間與沉默的陪伴，往往比言語詢問更有禮貌。", icon: "🤧" },
+            { text: "看見老師雙手提著很重的東西，小明跑過去問：「老師，我幫妳開門好嗎？」而不是強行要幫忙提。", isPolite: true, explanation: "提供合適的幫助（如開門）而非造成對方的負擔或尷尬，是聰明的禮貌。", icon: "🚪" },
+            { text: "在餐廳吃飯，服務生不小心把湯灑了一點在你的桌上，你對他說：「沒關係，擦掉就好了，辛苦了。」", isPolite: true, explanation: "對服務人員展現寬容與理解，是人格高度的體現。", icon: "🍲" },
+            { text: "同學說他今天心情不好，你回答：「那有什麼好難過的，我上次考不好也沒怎樣啊！」", isPolite: false, explanation: "這叫「否定他人的感受」，每個人對事情的壓力感受不同，應給予尊重。", icon: "💔" },
+            { text: "你在講話時，發現對方開始看手錶或眼神飄向門口，你主動說：「你是不是有事要忙？我們下次再聊。」", isPolite: true, explanation: "能察覺他人的非言語信號並主動結束對話，是極高的社交智慧。", icon: "⌚" },
+            { text: "跟長輩講話時，雖然你很急著想表達，但你會等長輩把話說完一段落，才說：「我可以補充一下嗎？」", isPolite: true, explanation: "不打斷他人說話，是對說話者最基本的禮貌。", icon: "👴" },
+            { text: "在安靜的教室裡，你雖然沒說話，但一直用手指甲抓桌子發出刺耳的聲響。", isPolite: false, explanation: "製造令人不適的噪音也是一種對環境與他人的不尊重。", icon: "💅" },
+            { text: "發現同學的拉鍊沒拉，你沒有大聲提醒，而是走到他身邊小聲跟他說。", isPolite: true, explanation: "在保護對方自尊心的前提下給予提醒，是非常貼心的舉動。", icon: "🤐" },
+            { text: "全班都在排隊，小明發現前面是好朋友，就直接走過去插在朋友前面聊天。", isPolite: false, explanation: "插隊是對所有排隊者的不公平與不尊重，不論認識與否。", icon: "🚶" },
+            { text: "玩桌遊輸了，小華雖然心裡很不甘願，但還是對贏家說：「這場比賽很精彩，你玩得很好。」", isPolite: true, explanation: "具備風度的競爭者，才是真正的贏家。", icon: "🎲" },
+            { text: "老師在講台上說錯一個字，小明馬上站起來大聲糾正：「老師妳寫錯了！那不是這樣念！」", isPolite: false, explanation: "糾正別人應注意場合與語氣，公開大聲糾正會讓對方尷尬。", icon: "✍️" },
+            { text: "去參加派對，離開前主動找主人的爸媽說：「謝謝你們邀請我，今天我很開心。」", isPolite: true, stars: 4, explanation: "主動表達感謝與道別，會讓主人感受到你的重視。", icon: "🎉" },
+            { text: "發現同學在背後說你壞話，你沒有衝過去罵他，而是私下找他問：「我有什麼地方讓你不舒服嗎？」", isPolite: true, explanation: "理性的溝通比情緒化的衝突更能優雅地解決問題。", icon: "💬" },
+            { text: "同學正在努力練習跳繩卻一直失敗，小明在旁邊喊：「你怎麼這麼笨啊，連這個都不會。」", isPolite: false, explanation: "打擊別人的自信與努力，是非常惡意的行為。", icon: "🪢" },
+            { text: "有人在跟你講嚴肅的事，你卻一直拿著手機在看通知或滑動螢幕。", isPolite: false, explanation: "這傳遞出「你的話沒有手機重要」的訊息，很不禮貌。", icon: "📱" },
+            { text: "即使在家裡，進去哥哥的房間前也會先敲門，等哥哥說「進來」才進去。", isPolite: true, explanation: "尊重家人的隱私空間，是維持家庭和諧的禮貌。", icon: "🚪" },
+            { text: "看到好朋友跟其他你不認識的人玩得很開心，你跑過去生氣地把朋友拉走。", isPolite: false, explanation: "朋友不是你的財產，應尊重朋友的社交權力與空間。", icon: "👫" },
+            { text: "同學借你的書不小心撕破一頁，他道歉時你說：「雖然這本書我很喜歡，但我知道你不是故意的，沒關係。」", isPolite: true, explanation: "把友誼放在物質之上，並溫柔地原諒，是非常高級的修養。", icon: "📖" },
+            { text: "在公共場合（如公車上）大聲播放手機影片，完全不管旁邊的人想休息。", isPolite: false, explanation: "私人娛樂不應干擾到公共空間的安寧。", icon: "🚌" },
+            { text: "老師問問題沒人回答，你雖然不確定答案，但為了支持老師，主動舉手說出你的想法。", isPolite: true, explanation: "給予講者反饋與支持，是一種溫柔的社交禮貌。", icon: "✋" },
+            { text: "看見同學沒帶午餐，小明雖然想分享，卻在全班面前大喊：「欸！你沒飯吃喔？我分你啦！」", isPolite: false, explanation: "這會讓受助者感到自卑與尷尬，幫助別人應顧及對方的面子。", icon: "🍱" },
+            { text: "當你感覺到自己快要發脾氣時，你主動對身邊的人說：「我現在情緒不太好，想先安靜一下。」", isPolite: true, explanation: "懂得覺察情緒並負責地處理它，是不遷怒於人的高級禮貌。", icon: "🌋" },
+            { text: "有人在稱讚你時，你一直說：「沒有啦，我很爛，你亂講」，讓氣氛變得很尷尬。", isPolite: false, explanation: "過度且尷尬的謙虛會讓讚美者不自在，應大方微笑說「謝謝你的稱讚」。", icon: "✨" },
+            { text: "在別人家作客結束，主動幫忙把使用過的桌子擦乾淨，將椅子推回原位。", isPolite: true, explanation: "「不給人添麻煩」是社交中極具美德的禮貌。", icon: "🧹" },
+            { text: "跟朋友約好時間卻遲到了，你一見面就解釋一堆理由，卻沒有先說「對不起，讓你久等了」。", isPolite: false, explanation: "解釋理由前，應先為耽誤別人的時間道歉。", icon: "⏰" },
+            { text: "當你不同意別人的意見時，你先說：「我明白你的意思，但我的看法稍微有點不同...」", isPolite: true, explanation: "這叫「先肯定再否定」，能維持對話的禮貌氣氛。", icon: "💡" },
+            { text: "同學在練習演講很緊張，你在台下故意跟旁邊的人交頭接耳，甚至發出笑聲。", isPolite: false, explanation: "這對台上的表演者是巨大的壓力與不尊重。", icon: "🎤" },
+            { text: "在圖書館不小心撞到桌子發出巨響，你馬上小聲對周圍的人點頭致歉。", isPolite: true, explanation: "覺察到自己對環境造成的干擾並及時致歉，是負責任的行為。", icon: "🏛️" },
+            { text: "朋友買了新衣服問你好不好看，你說：「這衣服顏色好土喔，你眼光真差。」", isPolite: false, explanation: "雖然是實話，但「眼光差」是人身攻擊，應學習溫婉的修辭。", icon: "👕" },
+            { text: "看見同學在努力搬桌子，你沒有直接上手去搶，而是問：「需要我幫你抬另一邊嗎？」", isPolite: true, explanation: "尊重他人的主導權，詢問對方的需求後再行動。", icon: "🪑" },
+            { text: "長輩在看電視，你因為想看卡通，直接拿走遙控器就轉台。", isPolite: false, explanation: "這種霸道的行為是極度的不尊重，應先徵得他人同意。", icon: "📺" },
+            { text: "當別人在稱讚你的對手時，你也能點頭表示認同，而不是露出不屑的表情。", isPolite: true, explanation: "能承認他人的優秀，代表你有寬廣的心胸與良好的教養。", icon: "🌟" }
         ];
-
-        // 為了展示平衡性，我自動擴充了剩下的題目 (略)
-        while(questions.length < 40) {
-            const index = questions.length;
-            questions.push({
-                text: index % 2 === 0 ? `禮貌題情境 ${index}...` : `不禮貌題情境 ${index}...`,
-                isPolite: index % 2 === 0,
-                stars: 5,
-                explanation: "這是關於社交覺知的專業解釋...",
-                icon: "✨"
-            });
-        }
 
         let currentQuestion = 0;
 
@@ -263,7 +261,6 @@
             document.getElementById('scenario-text').innerText = q.text;
             document.getElementById('progress-text').innerText = `第 ${currentQuestion + 1} / ${questions.length} 題`;
             document.getElementById('scenario-icon').innerText = q.icon;
-            document.getElementById('difficulty-badge').innerText = `判斷難度: ${"⭐".repeat(q.stars)}`;
 
             document.getElementById('answer-container').classList.add('hidden');
             document.getElementById('answer-container').classList.remove('show');
@@ -300,7 +297,6 @@
             const resultScreen = document.getElementById('result-screen');
             resultScreen.classList.remove('hidden');
 
-            // 排序前三名
             const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
             
             document.getElementById('rank-1-name').innerText = sorted[0] ? sorted[0][0] : "無";
